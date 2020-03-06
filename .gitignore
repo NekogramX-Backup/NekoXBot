@@ -1,0 +1,6 @@
+target/
+libs/
+data/
+*.bak
+config.yml
+/objectbox-jni-windows-x64.dll
