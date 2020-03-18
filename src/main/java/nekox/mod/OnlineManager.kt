@@ -1,24 +1,22 @@
 package nekox.mod
 
 import nekox.Launcher
-import nekox.box.IntEntity
 import nekox.core.client.TdHandler
+import nekox.core.defaultLog
 import nekox.core.raw.setOption
 import nekox.core.utils.delayDelete
 import nekox.core.utils.make
+import nekox.ext.confInt
+import nekox.ext.putConf
 import td.TdApi
 
 object OnlineManager : TdHandler() {
-
-    val db = Launcher.BOX.boxFor(IntEntity::class.java)
 
     override suspend fun onUserStatus(userId: Int, status: TdApi.UserStatus) {
 
         if (userId != sudo.me.id) return
 
-        val conf = db[0] ?: return
-
-        when (conf.value) {
+        when (confInt("online", 0)) {
 
             1 -> {
 
@@ -56,26 +54,19 @@ object OnlineManager : TdHandler() {
 
             "origin" -> {
 
-                db.remove(0)
-
-                db.put(IntEntity(0, 0))
+                putConf("online", 0)
 
             }
 
             "online" -> {
 
-                db.remove(0)
-
-                db.put(IntEntity(0, 1))
-
+                putConf("online", 1)
 
             }
 
             "offline" -> {
 
-                db.remove(0)
-
-                db.put(IntEntity(0, 2))
+                putConf("online", 2)
 
             }
 
@@ -83,7 +74,9 @@ object OnlineManager : TdHandler() {
 
                 sudo make "usage: !status <origin/online/offline>" editTo message
 
-                delayDelete(message,5 * 1000L)
+                delayDelete(message, 5 * 1000L)
+
+                return
 
             }
 

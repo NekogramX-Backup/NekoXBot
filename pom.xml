@@ -7,15 +7,16 @@
     <groupId>nekox</groupId>
     <artifactId>bot</artifactId>
     <version>1.0.0</version>
+    <packaging>pom</packaging>
 
     <properties>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-
-        <objectboxVersion>2.5.1</objectboxVersion>
         <kotlin.version>1.3.70</kotlin.version>
+
+        <achilles.version>6.0.4</achilles.version>
+
     </properties>
 
     <modules>
@@ -31,33 +32,21 @@
         </dependency>
 
         <dependency>
+            <groupId>org.dizitart</groupId>
+            <artifactId>nitrite</artifactId>
+            <version>3.3.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.squareup.okhttp3</groupId>
+                    <artifactId>okhttp</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
             <version>1.25</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.objectbox</groupId>
-            <artifactId>objectbox-java</artifactId>
-            <version>${objectboxVersion}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.objectbox</groupId>
-            <artifactId>objectbox-kotlin</artifactId>
-            <version>${objectboxVersion}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.objectbox</groupId>
-            <artifactId>objectbox-linux</artifactId>
-            <version>${objectboxVersion}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.objectbox</groupId>
-            <artifactId>objectbox-windows</artifactId>
-            <version>${objectboxVersion}</version>
         </dependency>
 
         <dependency>
@@ -80,46 +69,9 @@
         </dependency>
     </dependencies>
 
-    <repositories>
-        <repository>
-            <id>jcenter</id>
-            <url>https://jcenter.bintray.com/</url>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>bintray-objectbox-objectbox</id>
-            <name>bintray-plugins</name>
-            <url>https://dl.bintray.com/objectbox/objectbox</url>
-        </pluginRepository>
-    </pluginRepositories>
-
     <build>
 
         <plugins>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>versions-maven-plugin</artifactId>
-                <version>2.7</version>
-            </plugin>
-
-            <plugin>
-                <groupId>io.objectbox</groupId>
-                <artifactId>objectbox-maven-plugin</artifactId>
-                <version>1.2.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>transform</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <debug>true</debug>
-                </configuration>
-            </plugin>
 
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
@@ -151,10 +103,11 @@
                     <jvmTarget>1.8</jvmTarget>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
+                <version>3.8.1</version>
                 <executions>
                     <execution>
                         <id>compile</id>
@@ -172,21 +125,13 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>io.objectbox</groupId>
-                            <artifactId>objectbox-processor</artifactId>
-                            <version>${objectboxVersion}</version>
-                        </path>
-                    </annotationProcessorPaths>
-                    <annotationProcessors>
-                        <annotationProcessor>io.objectbox.processor.ObjectBoxProcessorShim</annotationProcessor>
-                    </annotationProcessors>
-                    <compilerArgs>
-                        <arg>-Aobjectbox.modelPath=${project.basedir}/src/main/resources/objectbox-modules.json</arg>
-                    </compilerArgs>
+                    <encoding>UTF-8</encoding>
+                    <source>11</source>
+                    <target>11</target>
+                    <useIncrementalCompilation>false</useIncrementalCompilation>
                 </configuration>
             </plugin>
+
 
         </plugins>
     </build>

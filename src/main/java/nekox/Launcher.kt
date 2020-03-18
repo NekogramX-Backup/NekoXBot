@@ -1,15 +1,16 @@
 package nekox
 
-import io.objectbox.BoxStore
 import kotlinx.coroutines.runBlocking
-import nekox.box.ObjectBox
 import nekox.core.client.TdBot
 import nekox.core.client.TdCliClient
 import nekox.core.defaultLog
 import nekox.core.displayName
 import nekox.core.raw.getUser
 import nekox.core.text
+import nekox.mod.AutoMask
 import nekox.mod.OnlineManager
+import org.dizitart.no2.Nitrite
+import org.slf4j.LoggerFactory
 import org.yaml.snakeyaml.Yaml
 import td.TdApi
 import java.io.File
@@ -21,10 +22,22 @@ class Launcher : TdCliClient() {
 
         lateinit var INSTANCE: Launcher
         lateinit var BOT: TdBot
-        lateinit var BOX: BoxStore
+        lateinit var NITRITE: Nitrite
 
         @JvmStatic
         fun main(args: Array<String>) = runBlocking<Unit> {
+
+            runCatching {
+
+                LoggerFactory::class.java.getDeclaredField("INITIALIZATION_STATE").apply {
+
+                    isAccessible = true
+
+                    set(null, 4)
+
+                }
+
+            }
 
             defaultLog.info("NekoX 正加载...")
 
@@ -50,19 +63,17 @@ class Launcher : TdCliClient() {
 
     }
 
-    override suspend fun onNewMessage(userId: Int, chatId: Long, message: TdApi.Message) {
-
-        defaultLog.debug("${getUser(userId).displayName}: ${message.text}")
-
-    }
-
     override suspend fun onLogin() {
 
         super.onLogin()
 
-        BOX = ObjectBox.create(File(sudo.options.databaseDirectory),"nekox")
+        NITRITE = Nitrite.builder()
+                .compressed()
+                .filePath("${sudo.options.databaseDirectory}/nekox.db")
+                .openOrCreate("nekox", "nya");
 
         addHandler(OnlineManager)
+        addHandler(AutoMask)
 
         defaultLog.info("加载伴生机器人")
 
